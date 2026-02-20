@@ -1,0 +1,90 @@
+{
+  "tools": [
+    {
+      "name": "checkAvailability",
+      "description": "Check available appointment slots for the next few days",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "daysAhead": {
+            "type": "integer",
+            "description": "Number of days to check ahead (default 5)",
+            "default": 5
+          },
+          "durationMinutes": {
+            "type": "integer",
+            "description": "Duration of the appointment in minutes (default 30)",
+            "default": 30
+          },
+          "timezone": {
+            "type": "string",
+            "description": "Timezone for the appointment (default Europe/London)",
+            "default": "Europe/London"
+          }
+        }
+      }
+    },
+    {
+      "name": "bookAppointment",
+      "description": "Book an appointment and send calendar invite",
+      "parameters": {
+        "type": "object",
+        "required": ["name", "practice", "phone", "email", "datetime"],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Full name of the person booking"
+          },
+          "practice": {
+            "type": "string",
+            "description": "Name of the dental practice"
+          },
+          "phone": {
+            "type": "string",
+            "description": "Phone number in UK format (+44...)"
+          },
+          "email": {
+            "type": "string",
+            "description": "Email address for calendar invite"
+          },
+          "datetime": {
+            "type": "string",
+            "description": "ISO 8601 datetime for the appointment (e.g., 2026-02-20T14:00:00Z)"
+          },
+          "notes": {
+            "type": "string",
+            "description": "Additional notes about the appointment"
+          }
+        }
+      }
+    },
+    {
+      "name": "getPracticeInfo",
+      "description": "Get information about the practice from previous interactions",
+      "parameters": {
+        "type": "object",
+        "required": ["phone"],
+        "properties": {
+          "phone": {
+            "type": "string",
+            "description": "Phone number to lookup"
+          }
+        }
+      }
+    },
+    {
+      "name": "saveCallbackTime",
+      "description": "Save a requested callback time for later",
+      "parameters": {
+        "type": "object",
+        "required": ["datetime"],
+        "properties": {
+          "datetime": {
+            "type": "string",
+            "description": "ISO 8601 datetime for when to call back"
+          }
+        }
+      }
+    }
+  ]
+}
