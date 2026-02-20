@@ -8,11 +8,22 @@ const { DateTime } = require('luxon');
 
 class CalendarService {
   constructor() {
+    // Validate env vars before using
+    if (!process.env.GOOGLE_CLIENT_EMAIL) {
+      throw new Error('GOOGLE_CLIENT_EMAIL not configured');
+    }
+    if (!process.env.GOOGLE_PRIVATE_KEY) {
+      throw new Error('GOOGLE_PRIVATE_KEY not configured');
+    }
+    if (!process.env.GOOGLE_CALENDAR_ID) {
+      throw new Error('GOOGLE_CALENDAR_ID not configured');
+    }
+
     // Initialize with service account
     const auth = new google.auth.GoogleAuth({
       credentials: {
         client_email: process.env.GOOGLE_CLIENT_EMAIL,
-        private_key: process.env.GOOGLE_PRIVATE_KEY.replace(/\\n/g, '\n'),
+        private_key: process.env.GOOGLE_PRIVATE_KEY?.replace(/\\n/g, '\n') || '',
       },
       scopes: [
         'https://www.googleapis.com/auth/calendar',
@@ -137,7 +148,7 @@ Booking via VoxAn AI
         timeZone: 'Europe/London'
       },
       attendees: [
-        { email: process.env.GOOGLE_CALENDAR_ID }, // Host
+        { email: this.calendarId }, // Host
         ...attendees.map(email => ({ email }))
       ],
       reminders: {

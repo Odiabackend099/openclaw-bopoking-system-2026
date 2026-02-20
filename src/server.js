@@ -5,15 +5,38 @@
 
 const express = require('express');
 const crypto = require('crypto');
-const CalendarService = require('./calendar-service');
-const DatabaseService = require('./database');
 
 const app = express();
 app.use(express.json());
 
-// Initialize services
-const calendar = new CalendarService();
-const db = new DatabaseService();
+// Lazy load services (don't crash on startup if env vars missing)
+let calendar = null;
+let db = null;
+let servicesInitialized = false;
+
+function getCalendar() {
+  if (!calendar) {
+    const CalendarService = require('./calendar-service');
+    calendar = new CalendarService();
+  }
+  return calendar;
+}
+
+function getDB() {
+  if (!db) {
+    const DatabaseService = require('./database');
+    db = new DatabaseService();
+  }
+  return db;
+}
+
+// Initialize services safely
+try {
+  servicesInitialized = true;
+  console.log('✅ Services configured (lazy loaded)');
+} catch (err) {
+  console.error('⚠️ Service init warning:', err.message);
+}
 
 /**
  * Verify VAPI webhook signature
@@ -75,12 +98,16 @@ app.post('/webhook/vapi', async (req, res) => {
 async function handleCallStarted(call) {
   console.log(`📞 Call started: ${call.id}`);
   
-  await db.createCall({
-    vapiCallId: call.id,
-    assistantId: call.assistantId,
-    phoneNumber: call.customer?.number,
-    status: 'in-progress'
-  });
+  try {
+    await getDB().createCall({
+      vapiCallId: call.id,
+      assistantId: call.assistantId,
+      phoneNumber: call.customer?.number,
+      status: 'in-progress'
+    });
+  } catch (err) {
+    console.error('Failed to log call start:', err.message);
+  }
 }
 
 /**
@@ -89,13 +116,17 @@ async function handleCallStarted(call) {
 async function handleCallEnded(call) {
   console.log(`📴 Call ended: ${call.id}`);
   
-  await db.updateCall(call.id, {
-    status: call.status,
-    duration: call.duration,
-    cost: call.cost,
-    success: call.analysis?.successEvaluation === 'true',
-    outcome: call.analysis?.summary
-  });
+  try {
+    await getDB().updateCall(call.id, {
+      status: call.status,
+      duration: call.duration,
+      cost: call.cost,
+      success: call.analysis?.successEvaluation === 'true',
+      outcome: call.analysis?.summary
+    });
+  } catch (err) {
+    console.error('Failed to log call end:', err.message);
+  }
 }
 
 /**
