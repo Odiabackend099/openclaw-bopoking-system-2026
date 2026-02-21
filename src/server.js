@@ -5,9 +5,12 @@
 
 const express = require('express');
 const crypto = require('crypto');
+const path = require('path');
 
 const app = express();
 app.use(express.json());
+// Serve static files from public directory
+app.use(express.static(path.join(__dirname, '..', 'public')));
 
 // Lazy load services (don't crash on startup if env vars missing)
 let calendar = null;

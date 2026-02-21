@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VoxAn Control Center</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <div class="container">
+    <header class="header">
+      <div class="header-left">
+        <div class="logo">
+          <span class="status-indicator"></span>
+          <h1>VoxAn Control Center</h1>
+          <span class="live-badge">Live</span>
+        </div>
+      </div>
+      <div class="header-right">
+        <span class="last-updated">Updated: <span id="lastUpdated">Just now</span></span>
+        <button class="btn-refresh" id="refreshBtn">↻ Refresh</button>
+      </div>
+    </header>
+
+    <nav class="tab-nav">
+      <button class="tab active" data-tab="overview">📊 Overview</button>
+      <button class="tab" data-tab="calls">📞 Calls</button>
+      <button class="tab" data-tab="leads">👥 Leads</button>
+      <button class="tab" data-tab="appointments">📅 Appointments</button>
+    </nav>
+
+    <main class="main-content">
+      <!-- Overview Tab -->
+      <section id="overview-tab" class="tab-content active">
+        <div class="stats-grid" id="stats-grid">
+          <div class="stat-card skeleton">
+            <div class="stat-icon">📞</div>
+            <div class="stat-value">-</div>
+            <div class="stat-label">Calls This Week</div>
+          </div>
+          <div class="stat-card skeleton">
+            <div class="stat-icon">✅</div>
+            <div class="stat-value">-%</div>
+            <div class="stat-label">Answered Rate</div>
+          </div>
+          <div class="stat-card skeleton">
+            <div class="stat-icon">📅</div>
+            <div class="stat-value">-</div>
+            <div class="stat-label">Booked This Week</div>
+          </div>
+          <div class="stat-card skeleton">
+            <div class="stat-icon">💰</div>
+            <div class="stat-value">$-</div>
+            <div class="stat-label">AI Cost This Week</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>Recent Activity</h2>
+          <div id="recent-activity" class="activity-list">
+            <div class="skeleton-row"></div>
+            <div class="skeleton-row"></div>
+            <div class="skeleton-row"></div>
+          </div>
+        </div>
+
+        <div class="quick-actions">
+          <button class="btn-primary" id="btn-call-lead">📞 Call a Lead</button>
+          <button class="btn-secondary" id="btn-view-leads">📋 View All Leads</button>
+        </div>
+      </section>
+
+      <!-- Calls Tab -->
+      <section id="calls-tab" class="tab-content">
+        <div class="filters">
+          <button class="filter-btn active" data-filter="all">All</button>
+          <button class="filter-btn" data-filter="answered">Answered</button>
+          <button class="filter-btn" data-filter="missed">Missed</button>
+          <button class="filter-btn" data-filter="outbound">Outbound</button>
+        </div>
+        <div class="card">
+          <div id="calls-list" class="list-container">
+            <div class="empty-state">
+              <div class="empty-icon">📞</div>
+              <p class="empty-title">No calls yet</p>
+              <p class="empty-text">Your bot will log calls here automatically.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Leads Tab -->
+      <section id="leads-tab" class="tab-content">
+        <div class="filters">
+          <button class="filter-btn active" data-sort="hottest">🔥 Hottest First</button>
+          <button class="filter-btn" data-sort="newest">Newest First</button>
+          <button class="filter-btn" data-sort="contacted">Most Contacted</button>
+        </div>
+        <div id="leads-list" class="leads-grid">
+          <div class="empty-state">
+            <div class="empty-icon">👥</div>
+            <p class="empty-title">No leads yet</p>
+            <p class="empty-text">Leads will appear here when people call your business.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Appointments Tab -->
+      <section id="appointments-tab" class="tab-content">
+        <div id="appointments-list" class="appointments-list">
+          <div class="empty-state">
+            <div class="empty-icon">📅</div>
+            <p class="empty-title">No appointments yet</p>
+            <p class="empty-text">When you book appointments, they will show here.</p>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Call Modal -->
+  <div id="call-modal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Call a Lead</h3>
+        <button class="modal-close" id="modal-close">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p>Your AI agent will call this number and handle the conversation.</p>
+        <input type="tel" id="phone-input" placeholder="(555) 123-4567" class="modal-input">
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" id="btn-cancel">Cancel</button>
+        <button class="btn-primary" id="btn-confirm-call">Start Call</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="toast"></div>
+
+  <script src="/app.js"></script>
+</body>
+</html>

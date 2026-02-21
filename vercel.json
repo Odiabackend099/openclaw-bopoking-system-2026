@@ -3,14 +3,34 @@
   "name": "voxan-booking",
   "builds": [
     {
+      "src": "public/**",
+      "use": "@vercel/static"
+    },
+    {
       "src": "src/server.js",
       "use": "@vercel/node"
     }
   ],
   "routes": [
     {
-      "src": "/(.*)",
+      "src": "/health",
       "dest": "src/server.js"
+    },
+    {
+      "src": "/webhook/(.*)",
+      "dest": "src/server.js"
+    },
+    {
+      "src": "/api/(.*)",
+      "dest": "src/server.js"
+    },
+    {
+      "src": "/(.*\\.(html|css|js|ico|png|svg))",
+      "dest": "public/$1"
+    },
+    {
+      "src": "/",
+      "dest": "public/index.html"
     }
   ],
   "env": {
